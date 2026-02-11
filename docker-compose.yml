@@ -39,8 +39,28 @@ services:
       -c max_wal_size=1GB
       -c min_wal_size=80MB
 
+  # pgAdmin - PostgreSQL Web 管理界面
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: uaf-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - uaf-network
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
+    driver: local
+  pgadmin_data:
     driver: local
 
 networks:

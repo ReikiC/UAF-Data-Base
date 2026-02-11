@@ -9,6 +9,7 @@ Universal Agent Framework - PostgreSQL 数据库项目
 **特点**:
 - 🐘 PostgreSQL 16（Alpine 版本）
 - 🐳 Docker Compose 一键启动
+- 🎨 pgAdmin 4 Web 管理界面
 - 🔄 自动初始化数据库扩展
 - 💾 持久化数据卷
 - 🛠️ 性能优化配置
@@ -76,6 +77,8 @@ UAF-Data-Base/
 
 ### 环境变量
 
+#### PostgreSQL 配置
+
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `DB_USER` | `postgres` | 数据库用户名 |
@@ -85,6 +88,14 @@ UAF-Data-Base/
 | `POSTGRES_SHARED_BUFFERS` | `256MB` | 共享缓冲区（系统 RAM 的 25%） |
 | `POSTGRES_MAX_CONNECTIONS` | `200` | 最大连接数 |
 | `POSTGRES_WORK_MEM` | `4MB` | 每个连接的工作内存 |
+
+#### pgAdmin 配置
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `PGADMIN_DEFAULT_EMAIL` | `admin@admin.com` | pgAdmin 登录邮箱 |
+| `PGADMIN_DEFAULT_PASSWORD` | `admin` | pgAdmin 登录密码（⚠️ 生产环境请修改） |
+| `PGADMIN_PORT` | `5050` | pgAdmin Web 界面端口 |
 
 ### 性能调优
 
@@ -150,6 +161,52 @@ User: postgres
 Password: postgres
 Database: universal_agent
 ```
+
+### 使用 pgAdmin (Web 管理界面)
+
+项目已集成 pgAdmin 4，提供图形化的数据库管理界面。
+
+#### 访问 pgAdmin
+
+1. 打开浏览器访问: **http://localhost:5050**
+2. 登录凭据:
+   - Email: `admin@admin.com`
+   - Password: `admin`
+
+#### 添加数据库连接
+
+登录后按以下步骤添加服务器：
+
+1. 点击 **"Add New Server"** 或右键 "Servers" → "Register" → "Server"
+
+2. **General 标签页**:
+   - Name: `UAF PostgreSQL` (自定义名称)
+
+3. **Connection 标签页**:
+
+   | 字段 | 值 |
+   |------|-----|
+   | Host | `uaf-postgres` |
+   | Port | `5432` |
+   | Maintenance database | `universal_agent` |
+   | Username | `postgres` |
+   | Password | `postgres` |
+
+4. 点击 **Save** 保存连接
+
+#### 查看数据
+
+连接成功后，导航路径：
+
+```
+Servers → UAF PostgreSQL → Databases → universal_agent → Schemas → public → Tables
+  ├─ sessions  (会话表)
+  └─ messages  (消息表)
+```
+
+右键点击表 → **View Data/Edit Data** → **All Rows** 即可查看数据。
+
+> 💡 **提示**: pgAdmin 和 PostgreSQL 在同一个 Docker 网络中，使用容器名 `uaf-postgres` 作为 Host。
 
 ---
 
