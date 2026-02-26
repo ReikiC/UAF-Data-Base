@@ -9,8 +9,10 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       # 允许从其他 IP 连接（开发调试用）
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
-    ports:
-      - "${DB_PORT:-5432}:5432"
+    # 移除端口映射 - 使用统一容器网络，不需要暴露到主机
+    # 主机 5432 端口被其他项目占用，且容器内访问不需要映射
+    # ports:
+    #   - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
@@ -65,4 +67,5 @@ volumes:
 
 networks:
   uaf-network:
+    name: uaf-network
     driver: bridge
